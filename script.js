@@ -14,9 +14,9 @@ const createTaskElement = (taskObj) => {
 
   const checkboxImgEl = document.createElement("img");
   if (!taskObj.completed) {
-    checkboxImgEl.src = "/assets/img/unchecked.png";
+    checkboxImgEl.src = "assets/img/unchecked.png";
   } else {
-    checkboxImgEl.src = "/assets/img/checked.png";
+    checkboxImgEl.src = "assets/img/checked.png";
   }
   checkboxImgEl.classList.add("task-checkbox");
   checkboxImgEl.dataset.id = taskObj.id;
@@ -28,7 +28,7 @@ const createTaskElement = (taskObj) => {
   taskTextEl.textContent = taskObj.task;
 
   const deleteImgEl = document.createElement("img");
-  deleteImgEl.src = "/assets/img/delete.png";
+  deleteImgEl.src = "assets/img/delete.png";
   deleteImgEl.classList.add("task-delete");
   deleteImgEl.dataset.id = taskObj.id;
 
