@@ -12,14 +12,12 @@ const createTaskElement = (taskObj) => {
   const taskWrapperEl = document.createElement("div");
   taskWrapperEl.classList.add("task");
 
-  const checkboxImgEl = document.createElement("img");
-  if (!taskObj.completed) {
-    checkboxImgEl.src = "assets/img/unchecked.png";
-  } else {
-    checkboxImgEl.src = "assets/img/checked.png";
-  }
-  checkboxImgEl.classList.add("task-checkbox");
-  checkboxImgEl.dataset.id = taskObj.id;
+  const checkboxEl = document.createElement("input");
+  checkboxEl.type = "checkbox";
+  checkboxEl.checked = taskObj.completed;
+
+  checkboxEl.classList.add("task-checkbox");
+  checkboxEl.dataset.id = taskObj.id;
 
   const taskTextEl = document.createElement("span");
   if (taskObj.completed) {
@@ -28,13 +26,21 @@ const createTaskElement = (taskObj) => {
   taskTextEl.textContent = taskObj.task;
 
   const deleteImgEl = document.createElement("img");
-  deleteImgEl.src = "assets/img/delete.png";
+  deleteImgEl.src = "assets/img/delete.svg";
   deleteImgEl.classList.add("task-delete");
   deleteImgEl.dataset.id = taskObj.id;
 
-  taskWrapperEl.append(checkboxImgEl, taskTextEl, deleteImgEl);
+  taskWrapperEl.append(checkboxEl, taskTextEl, deleteImgEl);
 
   return taskWrapperEl;
+};
+
+const onInputKeydown = (e) => {
+  if (e.key === "Enter") {
+    onAddTaskClick();
+  } else {
+    return;
+  }
 };
 
 const onAddTaskClick = () => {
@@ -69,11 +75,9 @@ const onTaskContainerClick = (e) => {
   } else if (e.target.classList.contains("task-checkbox")) {
     const clickedTaskId = Number(e.target.dataset.id);
 
-    tasks.forEach((taskObj) => {
-      if (taskObj.id === clickedTaskId) {
-        taskObj.completed = !taskObj.completed;
-      }
-    });
+    const foundTask = tasks.find((taskObj) => taskObj.id === clickedTaskId);
+
+    foundTask.completed = !foundTask.completed;
 
     updateUI();
     saveTaskInLocalStorage();
@@ -92,13 +96,18 @@ const updateUI = () => {
 const init = () => {
   const savedTasks = localStorage.getItem("tasks");
 
-  if (savedTasks) {
-    tasks = JSON.parse(savedTasks);
+  try {
+    if (savedTasks) {
+      tasks = JSON.parse(savedTasks);
+    }
+  } catch (error) {
+    console.log(error);
   }
 
   updateUI();
 
   addBtnEl.addEventListener("click", onAddTaskClick);
+  inputEl.addEventListener("keydown", onInputKeydown);
   tasksListEl.addEventListener("click", onTaskContainerClick);
 };
 
